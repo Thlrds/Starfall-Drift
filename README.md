@@ -1,14 +1,12 @@
-<p align="center"> <img alt="Space Station 14" width="880" height="200" src="https://github.com/funky-station/funky-station/blob/master/Resources/Textures/Logo/logo.png" /></p>
-
-This is a fork from the Wizard's Den "Space Station 14" repo, called Funky Station. To prevent people forking RobustToolbox, a "content" pack is loaded by the client and server. This content pack contains everything needed to play the game on one specific server.
+This is a fork of Funky Station with experimental changes, there is no server associated with this fork as of writing. To prevent people forking RobustToolbox, a "content" pack is loaded by the client and server. This content pack contains everything needed to play the game on one specific server.
 
 ## Links
 
-[Funky Station Discord Server](https://discord.gg/5FqgaAA2qF)
+No public Discord is available as of writing.
 
 ## Documentation/Wiki
 
-The [Funky Station Developer Documentation](https://docs.funkystation.org/) has information on how to contribute to Funky Station. It contains guides, game design documents and helpful tips on how to contribute to a repository. 
+No documentation is available as of writing.
 
 ## Contributing
 
@@ -40,5 +38,5 @@ Most media assets are licensed under [CC-BY-SA 3.0](https://creativecommons.org/
 
 Note that some assets are licensed under the non-commercial [CC-BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/) or similar non-commercial licenses and will need to be removed if you wish to use this project commercially.
 
-If you find that your work is misattributed or someone elses work is misattributed, please create an issue on this repos GitHub page, or email the Funky Station Maintainers @ `maintainers@funkystation.org`.
+If you find that your work is misattributed or someone elses work is misattributed, please create an issue on this repos GitHub page.
 
