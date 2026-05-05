@@ -14,7 +14,7 @@ namespace Content.Client._Starfall.Particles;
 /// </summary>
 public sealed class FootstepDustSystem : EntitySystem
 {
-    [Dependency] private readonly ClientParticleSystem _particles = default!;
+    [Dependency] private readonly ParticleSystem _particles = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IEyeManager _eye = default!;
