@@ -98,8 +98,11 @@ public interface ISkinColorationStrategy
 [Serializable, NetSerializable]
 public sealed partial class HumanTonedSkinColoration : ISkinColorationStrategy
 {
+    private const float LightH = 28f, LightS = 35f, LightV = 100f;
+    private const float DarkH  = 20f, DarkS  = 80f, DarkV  = 18f;
+
     [DataField]
-    public Color ValidHumanSkinTone = Color.FromHsv(new Vector4(0.07f, 0.2f, 1f, 1f));
+    public Color ValidHumanSkinTone = Color.FromHsv(new Vector4(LightH / 360f, LightS / 100f, LightV / 100f, 1f));
 
     public SkinColorationStrategyInput InputType => SkinColorationStrategyInput.Unary;
 
@@ -107,23 +110,18 @@ public sealed partial class HumanTonedSkinColoration : ISkinColorationStrategy
     {
         var colorValues = Color.ToHsv(color);
 
-        var hue = Math.Round(colorValues.X * 360f);
-        var sat = Math.Round(colorValues.Y * 100f);
-        var val = Math.Round(colorValues.Z * 100f);
-        // rangeOffset makes it so that this value
-        // is 25 <= hue <= 45
-        if (hue < 25f || hue > 45f)
-        {
-            return false;
-        }
+        var hue = colorValues.X * 360f;
+        var sat = colorValues.Y * 100f;
+        var val = colorValues.Z * 100f;
 
-        // rangeOffset makes it so that these two values
-        // are 20 <= sat <= 100 and 20 <= val <= 100
-        // where saturation increases to 100 and value decreases to 20
-        if (sat < 20f || val < 20f)
-        {
+        if (hue < 15f || hue > 38f)
             return false;
-        }
+
+        if (sat < LightS - 5f || sat > DarkS + 5f)
+            return false;
+
+        if (val < DarkV - 5f || val > LightV + 5f)
+            return false;
 
         return true;
     }
@@ -135,32 +133,13 @@ public sealed partial class HumanTonedSkinColoration : ISkinColorationStrategy
 
     public Color FromUnary(float color)
     {
-        // 0 - 100, 0 being gold/yellowish and 100 being dark
-        // HSV based
-        //
-        // 0 - 20 changes the hue
-        // 20 - 100 changes the value
-        // 0 is 45 - 20 - 100
-        // 20 is 25 - 20 - 100
-        // 100 is 25 - 100 - 20
+        // 0 = lightest (peach), 100 = darkest (deep brown)
+        // Linear interpolation across all three HSV channels.
+        var t = Math.Clamp(color, 0f, 100f) / 100f;
 
-        var tone = Math.Clamp(color, 0f, 100f);
-
-        var rangeOffset = tone - 20f;
-
-        var hue = 25f;
-        var sat = 20f;
-        var val = 100f;
-
-        if (rangeOffset <= 0)
-        {
-            hue += Math.Abs(rangeOffset);
-        }
-        else
-        {
-            sat += rangeOffset;
-            val -= rangeOffset;
-        }
+        var hue = LightH + (DarkH - LightH) * t;
+        var sat = LightS + (DarkS - LightS) * t;
+        var val = LightV + (DarkV - LightV) * t;
 
         return Color.FromHsv(new Vector4(hue / 360f, sat / 100f, val / 100f, 1.0f));
     }
@@ -168,19 +147,10 @@ public sealed partial class HumanTonedSkinColoration : ISkinColorationStrategy
     public float ToUnary(Color color)
     {
         var hsv = Color.ToHsv(color);
-        // check for hue/value first, if hue is lower than this percentage
-        // and value is 1.0
-        // then it'll be hue
-        if (Math.Clamp(hsv.X, 25f / 360f, 1) > 25f / 360f
-            && hsv.Z == 1.0)
-        {
-            return Math.Abs(45 - (hsv.X * 360));
-        }
-        // otherwise it'll directly be the saturation
-        else
-        {
-            return hsv.Y * 100;
-        }
+        // Invert the value lerp — value channel spans the widest range
+        var val = hsv.Z * 100f;
+        var t = (val - LightV) / (DarkV - LightV);
+        return Math.Clamp(t * 100f, 0f, 100f);
     }
 }
 
